@@ -36,81 +36,88 @@ function App() {
   const currentSettings = difficultySettings[difficulty]
   const totalCells = currentSettings.gridSize * currentSettings.gridSize
   
-  // Initialize audio
+  // Initialize audio with consolidated audio context creation
   useEffect(() => {
     if (soundEnabled) {
-      // Create simple audio using Web Audio API for sound effects
+      // Centralized audio context factory
+      const createAudioContext = () => {
+        try {
+          return new (window.AudioContext || window.webkitAudioContext)()
+        } catch (e) {
+          console.log('Audio not available')
+          return null
+        }
+      }
+
+      // Create simple beep sound
       const createBeep = (frequency, duration, type = 'sine') => {
         return () => {
-          try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+          const audioContext = createAudioContext()
+          if (!audioContext) return
+          
+          const oscillator = audioContext.createOscillator()
+          const gainNode = audioContext.createGain()
+          
+          oscillator.connect(gainNode)
+          gainNode.connect(audioContext.destination)
+          
+          oscillator.frequency.value = frequency
+          oscillator.type = type
+          
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration)
+          
+          oscillator.start(audioContext.currentTime)
+          oscillator.stop(audioContext.currentTime + duration)
+        }
+      }
+      
+      // Create coin jingle sound effect
+      audioRefs.current.coins = () => {
+        const audioContext = createAudioContext()
+        if (!audioContext) return
+        
+        const frequencies = [523, 659, 784, 1047] // C, E, G, C octave
+        frequencies.forEach((freq, index) => {
+          setTimeout(() => {
             const oscillator = audioContext.createOscillator()
             const gainNode = audioContext.createGain()
             
             oscillator.connect(gainNode)
             gainNode.connect(audioContext.destination)
             
-            oscillator.frequency.value = frequency
-            oscillator.type = type
+            oscillator.frequency.value = freq
+            oscillator.type = 'sine'
             
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration)
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
             
             oscillator.start(audioContext.currentTime)
-            oscillator.stop(audioContext.currentTime + duration)
-          } catch (e) {
-            console.log('Audio not available')
-          }
-        }
+            oscillator.stop(audioContext.currentTime + 0.3)
+          }, index * 100)
+        })
       }
       
-      // Create sound effects
-      audioRefs.current.coins = () => {
-        // Coin jingle - multiple tones
-        try {
-          const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-          const frequencies = [523, 659, 784, 1047] // C, E, G, C octave
-          frequencies.forEach((freq, index) => {
-            setTimeout(() => {
-              const oscillator = audioContext.createOscillator()
-              const gainNode = audioContext.createGain()
-              
-              oscillator.connect(gainNode)
-              gainNode.connect(audioContext.destination)
-              
-              oscillator.frequency.value = freq
-              oscillator.type = 'sine'
-              
-              gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
-              gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
-              
-              oscillator.start(audioContext.currentTime)
-              oscillator.stop(audioContext.currentTime + 0.3)
-            }, index * 100)
-          })
-        } catch (e) {
-          console.log('Audio not available')
-        }
-      }
-      audioRefs.current.parrot = createBeep(800, 0.2, 'square') // Sharp parrot squawk
+      // Create parrot squawk sound
+      audioRefs.current.parrot = createBeep(800, 0.2, 'square')
     }
   }, [soundEnabled])
   
-  // Timer effect
+  // Timer effect - simplified logic
   useEffect(() => {
-    let interval = null
-    if (timerStarted && timeLeft > 0 && !gameOver) {
-      interval = setInterval(() => {
-        setTimeLeft(timeLeft => {
-          if (timeLeft <= 1) {
-            setGameOver(true)
-            setMessage('⏰ Out of time! The treasure remains hidden...')
-            return 0
-          }
-          return timeLeft - 1
-        })
-      }, 1000)
-    }
+    if (!timerStarted || timeLeft <= 0 || gameOver) return
+
+    const interval = setInterval(() => {
+      setTimeLeft(timeLeft => {
+        if (timeLeft <= 1) {
+          setGameOver(true)
+          setMessage('⏰ Out of time! The treasure remains hidden...')
+          return 0
+        }
+        return timeLeft - 1
+      })
+    }, 1000)
+
     return () => clearInterval(interval)
   }, [timerStarted, gameOver])
   
