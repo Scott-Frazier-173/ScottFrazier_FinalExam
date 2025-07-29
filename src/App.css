@@ -1,0 +1,497 @@
+/* Pirate Treasure Hunt Theme */
+.app.pirate-theme {
+  font-family: 'Trebuchet MS', Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 1em;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(139, 69, 19, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(184, 134, 11, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #8B4513 0%, #D2691E 20%, #DEB887 40%, #F4A460 60%, #8B4513 100%);
+  color: #2F1B14;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Treasure map paper texture overlay */
+.app.pirate-theme::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(139, 69, 19, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 70% 70%, rgba(160, 82, 45, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px, 30px 30px;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Start Screen Modal */
+.treasure-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: 
+    linear-gradient(45deg, #DEB887 0%, #F4A460 50%, #DEB887 100%);
+  border: 4px solid #8B4513;
+  border-radius: 20px;
+  padding: 2em;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 
+    0 0 30px rgba(139, 69, 19, 0.8),
+    inset 0 0 20px rgba(255, 215, 0, 0.3);
+  position: relative;
+}
+
+.modal-content::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(45deg, #DAA520, #B8860B, #DAA520);
+  border-radius: 25px;
+  z-index: -1;
+}
+
+.pirate-title {
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+  text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.7);
+  color: #8B4513;
+}
+
+.pirate-subtitle {
+  font-size: 1.2em;
+  margin-bottom: 1.5em;
+  color: #654321;
+  font-style: italic;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  color: #8B4513;
+  font-size: 1.1em;
+}
+
+.pirate-input, .pirate-select {
+  padding: 0.8em;
+  font-size: 1.1em;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  background: rgba(255, 248, 220, 0.9);
+  color: #654321;
+  font-family: inherit;
+}
+
+.pirate-input:focus, .pirate-select:focus {
+  outline: none;
+  border-color: #DAA520;
+  box-shadow: 0 0 8px rgba(218, 165, 32, 0.6);
+}
+
+/* Sound Toggle Switch */
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  cursor: pointer;
+}
+
+.sound-toggle input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-slider {
+  width: 50px;
+  height: 25px;
+  background: #8B4513;
+  border-radius: 25px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  width: 21px;
+  height: 21px;
+  background: #FFF;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.sound-toggle input:checked + .toggle-slider {
+  background: #DAA520;
+}
+
+.sound-toggle input:checked + .toggle-slider::before {
+  transform: translateX(25px);
+}
+
+.start-button {
+  padding: 1em 2em;
+  font-size: 1.3em;
+  font-weight: bold;
+  background: linear-gradient(45deg, #DAA520, #FFD700, #DAA520);
+  color: #8B4513;
+  border: 3px solid #8B4513;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+  margin-top: 1em;
+}
+
+.start-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(139, 69, 19, 0.4);
+  background: linear-gradient(45deg, #FFD700, #FFF8DC, #FFD700);
+}
+
+.start-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Game Screen */
+.game-header {
+  margin-bottom: 1.5em;
+}
+
+.game-header h1 {
+  font-size: 2.2em;
+  margin-bottom: 0.5em;
+  text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.7);
+  color: #8B4513;
+}
+
+.game-info {
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+  margin-bottom: 1em;
+}
+
+.timer, .difficulty, .guesses {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  background: rgba(139, 69, 19, 0.1);
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  color: #8B4513;
+}
+
+/* Input Section */
+.input-section {
+  margin: 1.5em 0;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+
+.treasure-input {
+  padding: 0.8em;
+  font-size: 1.1em;
+  width: 120px;
+  text-align: center;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  background: rgba(255, 248, 220, 0.9);
+  color: #654321;
+  font-weight: bold;
+}
+
+.treasure-input:focus {
+  outline: none;
+  border-color: #DAA520;
+  box-shadow: 0 0 8px rgba(218, 165, 32, 0.6);
+}
+
+.guess-button {
+  padding: 0.8em 1.5em;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: linear-gradient(45deg, #DAA520, #FFD700);
+  color: #8B4513;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guess-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+}
+
+.guess-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Treasure Grid */
+.treasure-grid {
+  display: grid;
+  gap: 1px;
+  justify-content: center;
+  margin: 2em auto;
+  background: #8B4513;
+  padding: 2px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(139, 69, 19, 0.4);
+  width: fit-content;
+}
+
+/* Dynamic cell sizing based on difficulty */
+.treasure-grid.easy-difficulty {
+  gap: 1px;
+}
+
+.treasure-grid.easy-difficulty .treasure-cell {
+  width: 90px;
+  height: 90px;
+}
+
+.treasure-grid.medium-difficulty {
+  gap: 1px;
+}
+
+.treasure-grid.medium-difficulty .treasure-cell {
+  width: 80px;
+  height: 80px;
+}
+
+.treasure-grid.hard-difficulty {
+  gap: 1px;
+}
+
+.treasure-grid.hard-difficulty .treasure-cell {
+  width: 65px;
+  height: 65px;
+}
+
+.treasure-cell {
+  background: 
+    linear-gradient(45deg, #DEB887 0%, #F4A460 50%, #DEB887 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #8B4513;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  position: relative;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Treasure map paper texture for cells */
+.treasure-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(139, 69, 19, 0.1) 1px, transparent 1px),
+    radial-gradient(circle at 70% 70%, rgba(160, 82, 45, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px, 15px 15px;
+  opacity: 0.5;
+  border-radius: 6px;
+}
+
+.treasure-cell:hover:not(.scratched-out):not(.treasure-found) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+  background: linear-gradient(45deg, #FFD700 0%, #FFF8DC 50%, #FFD700 100%);
+}
+
+.treasure-cell.scratched-out {
+  background: 
+    linear-gradient(45deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+  color: #DEB887;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.treasure-cell.scratched-out::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  background: 
+    linear-gradient(45deg, transparent 40%, #654321 42%, #654321 58%, transparent 60%),
+    linear-gradient(-45deg, transparent 40%, #654321 42%, #654321 58%, transparent 60%);
+  opacity: 0.8;
+}
+
+.treasure-cell.treasure-found {
+  background: 
+    radial-gradient(circle, #FFD700 0%, #FFF8DC 30%, #DAA520 100%);
+  color: #8B4513;
+  font-size: 2em;
+  animation: treasure-shine 1s ease-in-out;
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.8),
+    inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes treasure-shine {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(5deg); }
+  50% { transform: scale(1.2) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Message */
+.treasure-message {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 1.5em 0;
+  min-height: 2em;
+  color: #8B4513;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Game Controls */
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em;
+  margin-top: 2em;
+  flex-wrap: wrap;
+}
+
+.reset-button, .back-button {
+  padding: 0.8em 1.5em;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #8B4513;
+}
+
+.reset-button {
+  background: linear-gradient(45deg, #90EE90, #98FB98);
+}
+
+.back-button {
+  background: linear-gradient(45deg, #FFB6C1, #FFC0CB);
+}
+
+.reset-button:hover, .back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 69, 19, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .treasure-grid.easy-difficulty .treasure-cell {
+    width: 75px;
+    height: 75px;
+    font-size: 1.3em;
+  }
+  
+  .treasure-grid.medium-difficulty .treasure-cell {
+    width: 65px;
+    height: 65px;
+    font-size: 1.2em;
+  }
+  
+  .treasure-grid.hard-difficulty .treasure-cell {
+    width: 55px;
+    height: 55px;
+    font-size: 1.1em;
+  }
+  
+  .game-info {
+    flex-direction: column;
+    gap: 1em;
+  }
+  
+  .pirate-title {
+    font-size: 2em;
+  }
+  
+  .modal-content {
+    margin: 1em;
+    padding: 1.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .treasure-grid {
+    padding: 1px;
+  }
+  
+  .treasure-grid.easy-difficulty .treasure-cell {
+    width: 65px;
+    height: 65px;
+    font-size: 1.2em;
+  }
+  
+  .treasure-grid.medium-difficulty .treasure-cell {
+    width: 55px;
+    height: 55px;
+    font-size: 1.1em;
+  }
+  
+  .treasure-grid.hard-difficulty .treasure-cell {
+    width: 45px;
+    height: 45px;
+    font-size: 1em;
+  }
+  
+  .input-section {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .treasure-input {
+    width: 150px;
+  }
+}
