@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.controls {
+  margin: 20px auto;
+}
+
+input {
+  width: 60px;
+  font-size: 16px;
+}
+
+button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 16px;
+}
+
+#message {
+  font-weight: bold;
+  margin: 15px;
+  font-size: 18px;
+}
+
+table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+td {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid #333;
+}
